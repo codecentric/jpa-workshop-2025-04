@@ -4,7 +4,7 @@ public class User {
 	private long id;
 	private String name;
 
-	public User() {
+	private User() {
 	}
 
 	public User(long id, String name) {

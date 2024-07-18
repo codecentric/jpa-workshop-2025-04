@@ -9,12 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageLoaderWithRelationsJdbcClient {
-	private static final RowMapper<Message> MESSAGE_ROW_MAPPER = (rs, rowNum) -> new Message(
-		rs.getLong("message_id"),
-		new User(rs.getLong("user_id"), rs.getString("username")),
-		rs.getString("receiver"),
-		rs.getString("content")
-	);
 	private final JdbcClient jdbcClient;
 
 	public MessageLoaderWithRelationsJdbcClient(JdbcClient jdbcClient) {

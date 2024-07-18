@@ -13,7 +13,7 @@ public class Message {
 		this.content = content;
 	}
 
-	public Message() {
+	private Message() {
 	}
 
 	public long getId() {

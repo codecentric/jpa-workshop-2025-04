@@ -41,4 +41,8 @@ public class MessageLoaderWithRelationsJpa {
 	public long countMessagesBySenderId(long senderId) {
 		throw new NotImplementedException("TODO");
 	}
+
+	public long countMessagesBySenderIdSql(int i) {
+		throw new NotImplementedException("TODO");
+	}
 }

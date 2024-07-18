@@ -94,4 +94,11 @@ class MessageLoaderWithRelationsJpaTest {
 		final long actual = underTest.countMessagesBySenderId(42);
 		assertThat(actual).isEqualTo(2);
 	}
+
+	@Test
+	@Disabled("TODO")
+	void findsCountBySenderIdSql() {
+		final long actual = underTest.countMessagesBySenderIdSql(42);
+		assertThat(actual).isEqualTo(2);
+	}
 }

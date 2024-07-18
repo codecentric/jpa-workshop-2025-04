@@ -21,4 +21,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 	List<Message> findAllBySenderIdAndContentContains(long senderId, String content);
 
 	int countMessagesBySenderId(long senderId);
+
+//	Message findWithEntityGraph(long messageId);
 }

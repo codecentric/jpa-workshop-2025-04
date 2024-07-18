@@ -8,6 +8,7 @@ import java.util.Optional;
 import de.codecentric.workshops.jpaworkshop.jpa.update.zipcode.Zipcode;
 import de.codecentric.workshops.jpaworkshop.jpa.update.zipcode.ZipcodeCH;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ class UserRepositoryTest {
 	private UserRepository underTest;
 	@Autowired
 	EntityManager em;
+	@Autowired
+	EntityManagerFactory emf;
 
 	@Test
 	void savesAndLoadsUserWithAddress() {
@@ -29,8 +32,7 @@ class UserRepositoryTest {
 		em.clear();
 		final Optional<User> loaded = underTest.findById(user1.getId());
 		Assertions.assertThat(loaded).isPresent();
-		assertThat(loaded.get().getAddress())
-			.isEqualTo(new Address("strasse", "stadt", Zipcode.of("81671")));
+		assertThat(loaded.get().getAddress()).isEqualTo(new Address("strasse", "stadt", Zipcode.of("81671")));
 	}
 
 	@Test
@@ -42,8 +44,7 @@ class UserRepositoryTest {
 		em.clear();
 		final Optional<User> loaded = underTest.findById(user1.getId());
 		Assertions.assertThat(loaded).isPresent();
-		assertThat(loaded.get().getAddress())
-			.isEqualTo(new Address("strasse", "stadt", Zipcode.of("8161")));
+		assertThat(loaded.get().getAddress()).isEqualTo(new Address("strasse", "stadt", Zipcode.of("8161")));
 		assertThat(loaded.get().getAddress().zip()).isInstanceOf(ZipcodeCH.class);
 	}
 }

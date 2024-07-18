@@ -95,4 +95,14 @@ class MessageRepositoryTest {
 		final int actual = 0; //underTest.???(???);
 		assertThat(actual).isEqualTo(2);
 	}
+
+	@Test
+	@Disabled("TODO")
+	void findsByContent() {
+		jdbcClient.sql("INSERT INTO messages SET id=4, sender_id=42, receiver='to4', content='another three'").update();
+		final List<Message> actual = Collections.emptyList(); // underTest.findWithContentSearch("three");
+		Assertions.assertThat(actual).hasSize(2);
+		assertThat(actual.get(0).getId()).isEqualTo(3);
+		assertThat(actual.get(1).getId()).isEqualTo(4);
+	}
 }

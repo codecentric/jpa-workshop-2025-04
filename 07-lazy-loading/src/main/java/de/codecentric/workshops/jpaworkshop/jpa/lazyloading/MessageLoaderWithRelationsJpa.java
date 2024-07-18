@@ -10,6 +10,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +42,8 @@ public class MessageLoaderWithRelationsJpa {
 	}
 
 	public List<Message> findAllBySenderIdAndContentContains(long senderId, String content) {
-		return entityManager.createQuery("SELECT m FROM Message m where sender.id = :id and m.content like :content",
+		return entityManager.createQuery(
+				"SELECT m FROM Message m where sender.id = :id and m.content like :content",
 				Message.class
 			)
 			.setParameter("id", senderId)
@@ -67,7 +70,8 @@ public class MessageLoaderWithRelationsJpa {
 	}
 
 	public List<Message> findAllBySenderIdOrderByTimestamp(Long senderId) {
-		return entityManager.createQuery("SELECT m FROM Message m WHERE sender.id = :id ORDER BY m.timestamp",
+		return entityManager.createQuery(
+				"SELECT m FROM Message m WHERE sender.id = :id ORDER BY m.timestamp",
 				Message.class
 			)
 			.setParameter("id", senderId)
@@ -104,5 +108,10 @@ public class MessageLoaderWithRelationsJpa {
 			}).toList());
 		}
 		return entityManager.createQuery(cq).getResultList();
+	}
+
+	@Transactional(TxType.REQUIRES_NEW)
+	public Message findWithFetch(final Long id) {
+		return loadMessage(id);
 	}
 }
