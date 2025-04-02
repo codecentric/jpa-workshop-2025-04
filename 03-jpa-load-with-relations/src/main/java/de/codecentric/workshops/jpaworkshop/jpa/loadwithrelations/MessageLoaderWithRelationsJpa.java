@@ -15,11 +15,11 @@ public class MessageLoaderWithRelationsJpa {
 	}
 
 	public Message loadMessage(long id) {
-		throw new NotImplementedException("TODO");
+		return entityManager.find(Message.class, id);
 	}
 
 	public List<Message> loadAllMessages() {
-		throw new NotImplementedException("TODO");
+		return entityManager.createQuery("select m from Message m").getResultList();
 	}
 
 	List<Message> findAllBySender(User sender) {

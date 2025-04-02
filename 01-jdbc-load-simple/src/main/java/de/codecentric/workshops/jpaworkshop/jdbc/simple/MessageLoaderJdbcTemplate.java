@@ -15,10 +15,31 @@ public class MessageLoaderJdbcTemplate {
 	}
 
 	public Message loadMessage(long id) {
-		throw new NotImplementedException("TODO");
+		var resultList = jdbcTemplate.query(
+			"SELECT * FROM messages WHERE message_id = ?", (rs, rowNum) -> new Message(
+				rs.getLong("message_id"),
+				rs.getString("sender"),
+				rs.getString("receiver"),
+				rs.getString("content")
+			),
+			id
+		);
+
+		if (resultList.size() != 1) {
+			throw new RuntimeException("expected exactly one result");
+		}
+
+		return resultList.get(0);
 	}
 
 	public List<Message> loadAllMessages() {
-		throw new NotImplementedException("TODO");
+		return jdbcTemplate.query(
+			"SELECT * FROM messages", (rs, rowNum) -> new Message(
+				rs.getLong("message_id"),
+				rs.getString("sender"),
+				rs.getString("receiver"),
+				rs.getString("content")
+			)
+		);
 	}
 }
