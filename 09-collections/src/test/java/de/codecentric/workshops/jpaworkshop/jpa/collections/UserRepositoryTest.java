@@ -122,6 +122,8 @@ class UserRepositoryTest {
 		final List<User> all = underTest.findAllByNameContains("user");
 		all.get(0).getWishlist().size();
 		all.get(1).getWishlist().size();
+		all.get(0).getSentMessages().size();
+		all.get(1).getSentMessages().size();
 	}
 
 	@Test

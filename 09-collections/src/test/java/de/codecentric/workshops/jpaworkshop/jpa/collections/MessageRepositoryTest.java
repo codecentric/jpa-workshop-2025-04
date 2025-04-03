@@ -11,6 +11,7 @@ import java.util.Random;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.hibernate.LazyInitializationException;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
@@ -203,5 +206,24 @@ class MessageRepositoryTest {
 		underTest.save(message);
 		final Message message2 = underTest.findByIdWithTransaction(msg1.getId());
 		assertThat(message2.getContent()).isEqualTo("new content");
+	}
+
+	@Test
+	void pagination() {
+		final var list = underTest.findAllBySenderId(user1.getId(), PageRequest.of(0, 1, Sort.by("receiver")));
+		assertThat(list).hasSize(1);
+		assertThat(list.get(0).getId()).isEqualTo(msg1.getId());
+		final var list2 = underTest.findAllBySenderId(user1.getId(), PageRequest.of(1, 1, Sort.by("receiver")));
+		assertThat(list2).hasSize(1);
+		assertThat(list2.get(0).getId()).isEqualTo(msg3.getId());
+
+		final var em = emf.createEntityManager();
+		final var query = em.createQuery("select m from Message m where m.sender.id = :id", Message.class)
+			.setParameter("id", user1.getId());
+		query.setMaxResults(1); //page size
+		query.setFirstResult(1);
+		final var list3 = query.getResultList();
+		assertThat(list3.get(0).getId()).isEqualTo(msg3.getId());
+
 	}
 }

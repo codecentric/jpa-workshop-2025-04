@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 import org.apache.commons.lang3.NotImplementedException;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -112,6 +113,15 @@ public class MessageLoaderWithRelationsJpa {
 
 	@Transactional(TxType.REQUIRES_NEW)
 	public Message findWithFetch(final Long id) {
-		return loadMessage(id);
+		final var msg = entityManager.createQuery(
+			"""
+				SELECT m 
+				FROM Message m
+				  JOIN FETCH m.sender
+				  JOIN FETCH m.sender.address
+				WHERE m.id = :id
+				""", Message.class
+		).setParameter("id", id).getSingleResult();
+		return msg;
 	}
 }

@@ -7,12 +7,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "\"user\"")
 public class User {
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(generator = "myGenerator2")
 	private Long id;
 	private String name;
 	@Enumerated(EnumType.STRING)

@@ -13,6 +13,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -40,10 +41,15 @@ public class User {
 	@Version
 	private Long version;
 
-	@Transient
+	@OneToMany(mappedBy = "sender")
+	@OrderBy("timestamp desc")
+	@Fetch(FetchMode.SUBSELECT)
 	private Set<Message> sentMessages = new HashSet<>();
 
-	@Transient
+	@ElementCollection()
+	@CollectionTable(name = "wishlist")
+	@OrderColumn
+	@Fetch(FetchMode.SUBSELECT)
 	private List<WishlistItem> wishlist = new ArrayList<>();
 
 	public User() {

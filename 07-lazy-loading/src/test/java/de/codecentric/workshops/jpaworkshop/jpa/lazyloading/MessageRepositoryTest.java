@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import de.codecentric.workshops.jpaworkshop.jpa.lazyloading.zipcode.Zipcode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,7 @@ class MessageRepositoryTest {
 		entityManager.getTransaction().begin();
 		entityManager.createQuery("DELETE from Message").executeUpdate();
 		entityManager.createQuery("DELETE from User").executeUpdate();
+		user1.setAddress(new Address("street", "city", Zipcode.of("80339")));
 		entityManager.persist(user1);
 		entityManager.persist(user2);
 		msg1 = new Message(user1, "to1", "content one", now);
@@ -172,12 +174,11 @@ class MessageRepositoryTest {
 
 		assertThat(sender).isNotNull();
 
-		assertThat(sender.getName()).isNotEmpty();
-//		assertThatThrownBy(() -> sender.getName()).isInstanceOf(LazyInitializationException.class);
+		assertThatThrownBy(() -> sender.getName()).isInstanceOf(LazyInitializationException.class);
 	}
 
 	@Test
-	@Disabled
+	@Transactional
 	void lazyLoadingWhileInSession() {
 		final var loaded = underTest.findById(msg1.getId());
 		assertThat(loaded).isPresent();
@@ -193,8 +194,8 @@ class MessageRepositoryTest {
 
 	@Test
 	void joinFetch() {
-//		final Message loaded = underTest.findWithEntityGraph(msg1.getId());
-//		final User sender = loaded.getSender();
-//		assertThat(sender.getName()).isNotEmpty();
+		final Message loaded = underTest.findWithEntityGraph(msg1.getId());
+		final Address address = loaded.getSender().getAddress();
+		assertThat(address.getStreet()).isNotEmpty();
 	}
 }

@@ -2,6 +2,12 @@ package de.codecentric.workshops.jpaworkshop.jpa.controllingnames;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -124,5 +130,15 @@ class MessageLoaderWithRelationsJpaTest {
 		jdbcClient.sql("SELECT * from messages where ID=?;").param(1, 0).query(rs -> {
 			assertThat(rs.getString("content")).isEqualTo("content_new");
 		});
+	}
+
+	@Test
+	void time() {
+		Instant now = Instant.now();
+		final var fiveLater = now.plusSeconds(5);
+		LocalDate date = LocalDate.now();
+		LocalDateTime time = LocalDateTime.now();
+		Duration duration = Duration.between(now, fiveLater);
+		System.out.println(duration);
 	}
 }

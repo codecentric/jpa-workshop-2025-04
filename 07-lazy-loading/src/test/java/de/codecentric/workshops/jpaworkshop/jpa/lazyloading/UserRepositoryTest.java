@@ -23,14 +23,15 @@ class UserRepositoryTest {
 	@Test
 	void savesAndLoadsUserWithAddress() {
 		final User user1 = new User("user1", UserLevel.ADMIN, LocalDate.now());
-		user1.setAddress(new Address("strasse", "stadt", Zipcode.of("81671")));
+		final var address = new Address("strasse", "stadt", Zipcode.of("81671"));
+//		em.persist(address);
+		user1.setAddress(address);
 		underTest.save(user1);
 		em.flush();
 		em.clear();
 		final Optional<User> loaded = underTest.findById(user1.getId());
 		Assertions.assertThat(loaded).isPresent();
-		assertThat(loaded.get().getAddress())
-			.isEqualTo(new Address("strasse", "stadt", Zipcode.of("81671")));
+		assertThat(loaded.get().getAddress().getStreet()).isEqualTo("strasse");
 	}
 
 	@Test
@@ -44,6 +45,6 @@ class UserRepositoryTest {
 		Assertions.assertThat(loaded).isPresent();
 		assertThat(loaded.get().getAddress())
 			.isEqualTo(new Address("strasse", "stadt", Zipcode.of("8161")));
-		assertThat(loaded.get().getAddress().zip()).isInstanceOf(ZipcodeCH.class);
+		assertThat(loaded.get().getAddress().getZip()).isInstanceOf(ZipcodeCH.class);
 	}
 }

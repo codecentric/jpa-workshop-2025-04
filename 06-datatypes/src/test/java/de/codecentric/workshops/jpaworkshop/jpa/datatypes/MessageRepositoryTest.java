@@ -3,6 +3,7 @@ package de.codecentric.workshops.jpaworkshop.jpa.datatypes;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -126,36 +127,42 @@ class MessageRepositoryTest {
 	}
 
 	@Test
-	@Disabled("TODO")
 	void ordersByTimestamp() {
 		new Random().longs(10, 0, 100_000_000)
-			.forEach(timestamp -> underTest.save(new Message(user1,
+			.forEach(timestamp -> underTest.save(new Message(
+				user1,
 				"to",
 				"content",
 				Instant.ofEpochSecond(timestamp)
 			)));
 		final List<Message> actual = underTest.findAllBySenderIdOrderByTimestamp(user1.getId());
 		assertThat(actual).hasSize(12); // 2 from above and 10 from here
-		actual.stream().map(Message::getTimestamp).reduce(Instant.EPOCH, (previous, current) -> {
-			assertThat(previous).isBeforeOrEqualTo(current);
-			return current;
-		});
+		actual.stream().map(Message::getTimestamp).reduce(
+			Instant.EPOCH, (previous, current) -> {
+				assertThat(previous).isBeforeOrEqualTo(current);
+				return current;
+			}
+		);
 	}
 
 	@Test
-	@Disabled
 	void ordersByCustomSort() {
 		new Random().longs(10, 0, 100_000_000)
-			.forEach(timestamp -> underTest.save(new Message(user1,
+			.forEach(timestamp -> underTest.save(new Message(
+				user1,
 				"to",
 				"content",
 				Instant.ofEpochSecond(timestamp)
 			)));
-		final List<Message> actual = underTest.findAllBySenderId(user1.getId(), Sort.by("timestamp").reverse());
+		final List<Message> actual = underTest.findAllBySenderId(user1.getId(),
+			Sort.by("timestamp").reverse());
 		assertThat(actual).hasSize(12); // 2 from above and 10 from here
-		actual.stream().map(Message::getTimestamp).reduce(Instant.MAX, (previous, current) -> {
-			assertThat(previous).isAfterOrEqualTo(current);
-			return current;
-		});
+		actual.stream().map(Message::getTimestamp).reduce(
+			Instant.MAX, (previous, current) -> {
+				assertThat(previous).isAfterOrEqualTo(current);
+				return current;
+			}
+		);
 	}
+
 }
